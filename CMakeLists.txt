@@ -3,13 +3,6 @@ if(HAVE_STDINT_H)
     add_definitions(-DHAVE_STDINT_H)
 endif()
 
-set(python_libraries ${Python3_LIBRARIES})
-if(${NS3_PIP_PACKAGING})
-  set(python_libraries
-      -Wl,--allow-shlib-undefined
-  )
-endif()
-
 build_lib(
     LIBNAME defiance
     SOURCE_FILES
@@ -48,7 +41,6 @@ build_lib(
             ${libai}
             ${libcore}
             ${libinternet}
-            ${python_libraries}
     TEST_SOURCES
             test/action-application-test.cc
             test/agent-application-test.cc

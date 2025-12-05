@@ -2,6 +2,8 @@
 #include "ns3/ns3-ai-multi-agent-gym-interface.h"
 #include "ns3/test.h"
 
+#include <boost/interprocess/exceptions.hpp>
+
 using namespace ns3;
 
 /**
@@ -16,7 +18,9 @@ class SimpleMarlInterfaceTestSuite : public TestSuite
     SimpleMarlInterfaceTestSuite(std::string name = "marl-interface", Type type = Type::UNIT);
 
   protected:
-    void SetupCallbacks();
+    virtual void SetupCallbacks();
+    void DoSetup() override;
+    void DoTeardown() override;
 
     virtual std::map<std::string, std::pair<Ptr<OpenGymBoxSpace>, Ptr<OpenGymBoxSpace>>>
     AgentSpaces()
@@ -29,6 +33,8 @@ class SimpleMarlInterfaceTestSuite : public TestSuite
                 {"agent3", {m_box3, m_box3}}};
     }
 
+    bool m_exitEarly = false;
+
   private:
     void DoRun() override;
 };
@@ -39,18 +45,46 @@ SimpleMarlInterfaceTestSuite::SimpleMarlInterfaceTestSuite(std::string name, Tes
 }
 
 void
-SimpleMarlInterfaceTestSuite::DoRun()
+SimpleMarlInterfaceTestSuite::DoSetup()
 {
     SetupCallbacks();
+    try
+    {
+        OpenGymMultiAgentInterface::Get()->Init();
+    }
+    catch (boost::interprocess::interprocess_exception& e)
+    {
+        std::cout << "SKIP " << this->GetName()
+                  << " Run this test using pytest from defiance 0.000s" << std::endl;
+        m_exitEarly = true;
+        return;
+    }
+}
+
+void
+SimpleMarlInterfaceTestSuite::DoTeardown()
+{
+    Simulator::Destroy();
+    if (!m_exitEarly)
+    {
+        OpenGymMultiAgentInterface::Get()->NotifySimulationEnd();
+    }
+}
+
+void
+SimpleMarlInterfaceTestSuite::DoRun()
+{
     std::vector<std::string> agentCycle{"agent1", "agent2", "agent3", "agent2", "agent1"};
     for (const auto& agent : agentCycle)
     {
         auto observation =
             MakeBoxContainer<float>(AgentSpaces()[agent].first->GetShape().front(), 0.1);
-        OpenGymMultiAgentInterface::Get()
-            ->NotifyCurrentState(agent, observation, 1, false, {}, Seconds(1), noopCallback);
+        if (!m_exitEarly)
+        {
+            OpenGymMultiAgentInterface::Get()
+                ->NotifyCurrentState(agent, observation, 1, false, {}, Seconds(1), noopCallback);
+        }
     }
-    OpenGymMultiAgentInterface::Get()->NotifySimulationEnd();
 }
 
 void
@@ -96,9 +130,11 @@ class EchoMarlInterfaceTestSuite : public SimpleMarlInterfaceTestSuite
 
     void DoRun() override
     {
-        SetupCallbacks();
         SendNewAction(0, MakeBoxContainer<float>(12, 0.1));
-        Simulator::Run();
+        if (!m_exitEarly)
+        {
+            Simulator::Run();
+        }
     };
 
     void SendNewAction(int i, Ptr<OpenGymDataContainer> action);
@@ -125,14 +161,23 @@ EchoMarlInterfaceTestSuite::SendNewAction(int i, Ptr<OpenGymDataContainer> actio
         break;
     };
     std::cout << "Reward = " << reward << std::endl;
-    OpenGymMultiAgentInterface::Get()->NotifyCurrentState(
-        agent,
-        action,
-        reward,
-        false,
-        {},
-        Seconds(10),
-        MakeCallback(&EchoMarlInterfaceTestSuite::SendNewAction, this, i + 1));
+    try
+    {
+        OpenGymMultiAgentInterface::Get()->NotifyCurrentState(
+            agent,
+            action,
+            reward,
+            false,
+            {},
+            Seconds(10),
+            MakeCallback(&EchoMarlInterfaceTestSuite::SendNewAction, this, i + 1));
+    }
+    catch (boost::interprocess::interprocess_exception& e)
+    {
+        std::cout << "SKIP " << this->GetName()
+                  << " Run this test using pytest from defiance 0.000s" << std::endl;
+        return;
+    }
 }
 
 class TestObservation : public ObservationApplication
@@ -245,8 +290,8 @@ class MarlAgentInterfaceTestSuite : public SimpleMarlInterfaceTestSuite
     {
     }
 
-  private:
-    void DoRun() override
+  protected:
+    void SetupCallbacks() override
     {
         NodeContainer nodes(2);
         auto agent = CreateObject<EchoAgentApplication>();
@@ -263,11 +308,15 @@ class MarlAgentInterfaceTestSuite : public SimpleMarlInterfaceTestSuite
         commHelper.SetIds();
         commHelper.AddCommunication({{observationApp->GetId(), agent->GetId(), {}}});
         commHelper.Configure();
+    };
 
+    void DoRun() override
+    {
         Simulator::Stop(Seconds(1000));
-        Simulator::Run();
-        Simulator::Destroy();
-        OpenGymMultiAgentInterface::Get()->NotifySimulationEnd();
+        if (!m_exitEarly)
+        {
+            Simulator::Run();
+        }
     };
 };
 

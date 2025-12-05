@@ -22,6 +22,7 @@ class SimpleChannelInterfaceBaseTestCase : public TestCase
     ~SimpleChannelInterfaceBaseTestCase() override;
 
   protected:
+    void DoSetup() override;
     void DoRun() override;
     virtual void Simulate() = 0;
 
@@ -53,16 +54,21 @@ class SimpleChannelInterfaceBaseTestCase : public TestCase
 };
 
 SimpleChannelInterfaceBaseTestCase::SimpleChannelInterfaceBaseTestCase(std::string name)
-    : TestCase(name),
-      m_nodes(2),
-      m_devices(GetDevices(m_nodes)),
-      m_interfaces(GetInterfaces(m_devices))
+    : TestCase(name)
 {
     Ipv4AddressGenerator::TestMode();
 }
 
 SimpleChannelInterfaceBaseTestCase::~SimpleChannelInterfaceBaseTestCase()
 {
+}
+
+void
+SimpleChannelInterfaceBaseTestCase::DoSetup()
+{
+    m_nodes = NodeContainer{2};
+    m_devices = GetDevices(m_nodes);
+    m_interfaces = GetInterfaces(m_devices);
 }
 
 void

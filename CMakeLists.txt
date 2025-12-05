@@ -6,6 +6,43 @@ if (NOT libai)
     return()
 endif()
 
+# check ns3-ai dependencies
+find_package(Boost CONFIG COMPONENTS program_options)
+if(NOT Boost_FOUND)
+    message(
+      ${HIGHLIGHTED_STATUS}
+      "Skipping contrib/defiance: boost not found"
+    )
+    return()
+endif()
+find_package(Python COMPONENTS Interpreter Development)
+if(NOT Python_FOUND)
+    message(
+      ${HIGHLIGHTED_STATUS}
+      "Skipping contrib/defiance: Python not found"
+    )
+    return()
+endif()
+find_package(pybind11 CONFIG)
+if(NOT pybind11_FOUND)
+    message(
+      ${HIGHLIGHTED_STATUS}
+      "Skipping contrib/defiance: pybind11 not found"
+    )
+    return()
+endif()
+find_package(Protobuf CONFIG)
+if(NOT Protobuf_FOUND)
+    find_package(Protobuf)
+    if(NOT Protobuf_FOUND)
+        message(
+          ${HIGHLIGHTED_STATUS}
+          "Skipping contrib/defiance: Protobuf not found"
+        )
+    return()
+    endif()
+endif()
+
 check_include_file_cxx(stdint.h HAVE_STDINT_H)
 if(HAVE_STDINT_H)
     add_definitions(-DHAVE_STDINT_H)

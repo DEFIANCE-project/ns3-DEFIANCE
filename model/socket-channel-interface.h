@@ -8,6 +8,9 @@
 #include "ns3/tcp-socket-factory.h"
 #include "ns3/udp-socket-factory.h"
 
+namespace ns3
+{
+
 /**
  * @ingroup defiance
  * @class SocketChannelInterface
@@ -18,7 +21,6 @@
 
 // TODO: Overall provide tests for this class. The tests for the simple channel interface could be a
 // good starting point.
-
 class SocketChannelInterface : public ChannelInterface
 {
   public:
@@ -113,5 +115,6 @@ class SocketChannelInterface : public ChannelInterface
     Ptr<Socket> m_remoteSocket; ///< The socket used for sending messages (in case of TCP)
     Address m_localAddress;     ///< The address that the local socket is bound to.
 };
+} // namespace ns3
 
 #endif // NS3_SOCKET_CHANNEL_INTERFACE_H

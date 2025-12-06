@@ -4,8 +4,8 @@
 #include "ns3/container.h"
 #include "ns3/traced-callback.h"
 
-using namespace ns3;
-
+namespace ns3
+{
 enum ConnectionStatus
 {
     DISCONNECTED,
@@ -87,5 +87,6 @@ class ChannelInterface : public Object
     TracedCallback<Ptr<OpenGymDictContainer>>
         m_receiveCallbacks; ///< The callbacks to be called when a message is received
 };
+} // namespace ns3
 
 #endif /* CHANNEL_INTERFACE_H */

@@ -133,9 +133,9 @@ class ObservationSharingTestAgent : public AgentApplication
         return {};
     }
 };
-} // namespace ns3
 
 NS_OBJECT_ENSURE_REGISTERED(ObservationSharingTestAgent);
+} // namespace ns3
 
 // run this example with 'ns3 run defiance-observation-sharing'
 
@@ -148,6 +148,7 @@ NS_OBJECT_ENSURE_REGISTERED(ObservationSharingTestAgent);
 int
 main(int argc, char* argv[])
 {
+    using namespace ns3;
     // enable this for more detailed logging
     // LogComponentEnable("AgentApplication", LOG_LEVEL_FUNCTION);
     LogComponentEnable("ObservationSharing", LOG_LEVEL_FUNCTION);

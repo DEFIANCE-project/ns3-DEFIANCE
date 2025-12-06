@@ -55,6 +55,7 @@ class AgentAgentCommunicationTestAgent : public AgentApplication
 int
 main(int argc, char* argv[])
 {
+    using namespace ns3;
     LogComponentEnable("AgentApplication", LOG_LEVEL_FUNCTION);
     LogComponentEnable("AgentAgentCommunication", LOG_LEVEL_FUNCTION);
 

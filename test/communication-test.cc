@@ -5,6 +5,8 @@
 #include "ns3/rl-application-helper.h"
 #include "ns3/test.h"
 
+using namespace ns3;
+
 /**
  * @ingroup defiance-tests
  *

@@ -5,6 +5,9 @@
 
 #include "ns3/nstime.h"
 
+namespace ns3
+{
+
 /**
  * @ingroup defiance
  * @class SimpleChannelInterface
@@ -82,5 +85,6 @@ class SimpleChannelInterface : public ChannelInterface
     Time m_propagationDelay; ///< The time it takes for a message to be transmitted from one
                              ///< end of the channel to the other
 };
+} // namespace ns3
 
 #endif // NS3_SIMPLE_CHANNEL_INTERFACE_H

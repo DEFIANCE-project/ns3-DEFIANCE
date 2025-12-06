@@ -4,6 +4,9 @@
 
 #include "ns3/node.h"
 
+#include <cstdint>
+#include <vector>
+
 using namespace ns3;
 
 NS_LOG_COMPONENT_DEFINE("SocketChannelInterface");
@@ -133,10 +136,10 @@ SocketChannelInterface::Serialize(const Ptr<OpenGymDictContainer> data)
     NS_LOG_FUNCTION(this << data);
 
     size_t size = data->GetDataContainerPbMsg().ByteSizeLong();
-    auto buffer = new u_int8_t[size];
+    std::vector<uint8_t> buffer(size);
 
-    data->GetDataContainerPbMsg().SerializeToArray(buffer, size);
-    auto packet = Create<Packet>(buffer, size);
+    data->GetDataContainerPbMsg().SerializeToArray(buffer.data(), size);
+    auto packet = Create<Packet>(buffer.data(), size);
     return packet;
 }
 
@@ -145,11 +148,11 @@ SocketChannelInterface::Deserialize(Ptr<Packet> packet)
 {
     NS_LOG_FUNCTION(this << packet);
 
-    auto buffer = new uint8_t[packet->GetSize()];
-    packet->CopyData(buffer, packet->GetSize());
+    std::vector<uint8_t> buffer(packet->GetSize());
+    packet->CopyData(buffer.data(), packet->GetSize());
 
     ns3_ai_gym::DataContainer dataContainerPbMsg;
-    dataContainerPbMsg.ParseFromArray(buffer, packet->GetSize());
+    dataContainerPbMsg.ParseFromArray(buffer.data(), packet->GetSize());
 
     Ptr<OpenGymDataContainer> gymDataContainer =
         OpenGymDataContainer::CreateFromDataContainerPbMsg(dataContainerPbMsg);
@@ -198,7 +201,7 @@ SocketChannelInterface::Connect(Ptr<ChannelInterface> otherInterface)
     // includes a check that only two channel interfaces based on sockets can be connected
     try
     {
-        if (!dynamic_cast<SocketChannelInterface*>(GetPointer(otherInterface)))
+        if (!DynamicCast<SocketChannelInterface>(otherInterface))
         {
             throw std::bad_cast(); // Checks that we are actually connecting two
                                    // SimpleChannelInterfaces with one another

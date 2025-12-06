@@ -174,6 +174,8 @@ class AgentApplication : public RlApplication
     void RequestTruncation();
 
   protected:
+    void DoDispose() override;
+
     uint m_maxObservationHistoryLength; //!< maximum length of the history of each observation deque
                                         //!< to store
     uint m_maxRewardHistoryLength; //!< maximum length of the history of each reward deque to store

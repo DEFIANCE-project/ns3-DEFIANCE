@@ -82,7 +82,6 @@ class ChannelInterface : public Object
     void SetConnectionStatus(ConnectionStatus status);
 
   private:
-    Ptr<ChannelInterface> m_communicationPartner; ///< The other end of the communication channel
     ConnectionStatus m_connectionStatus{DISCONNECTED}; ///< The connection status of the channel
     TracedCallback<Ptr<OpenGymDictContainer>>
         m_receiveCallbacks; ///< The callbacks to be called when a message is received

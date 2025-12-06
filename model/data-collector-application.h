@@ -93,6 +93,8 @@ class DataCollectorApplication : public RlApplication
 
     InterfaceMap m_interfaces; //!< All interfaces connected to this DataCollectorApplication for
                                //!< sending to AgentApplications
+
+    void DoDispose() override;
 };
 
 } // namespace ns3

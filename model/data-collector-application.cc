@@ -13,6 +13,18 @@ DataCollectorApplication::~DataCollectorApplication()
 {
 }
 
+void
+DataCollectorApplication::DoDispose()
+{
+    for (auto& [appId, interfaceMap] : m_interfaces)
+    {
+        for (auto& [id, interfacePtr] : interfaceMap)
+        {
+            interfacePtr->Dispose();
+        }
+    }
+}
+
 TypeId
 DataCollectorApplication::GetTypeId()
 {

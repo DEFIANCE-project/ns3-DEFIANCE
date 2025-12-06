@@ -125,6 +125,14 @@ SimpleChannelInterface::PartialDisconnect()
     SetConnectionStatus(DISCONNECTED);
 }
 
+void
+SimpleChannelInterface::DoDispose()
+{
+    NS_LOG_FUNCTION(this);
+    Disconnect();
+    ChannelInterface::DoDispose();
+}
+
 // TODO: This should never lead to problems but the method itself has not been tested completely
 void
 SimpleChannelInterface::Disconnect()

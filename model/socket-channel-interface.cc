@@ -52,6 +52,19 @@ SocketChannelInterface::~SocketChannelInterface()
     NS_LOG_FUNCTION(this);
 }
 
+void
+SocketChannelInterface::DoDispose()
+{
+    NS_LOG_FUNCTION(this);
+    if (m_communicationPartner)
+    {
+        m_communicationPartner = nullptr;
+        m_localSocket = nullptr;
+        m_remoteSocket = nullptr;
+    }
+    ChannelInterface::DoDispose();
+}
+
 int
 SocketChannelInterface::Send(const Ptr<OpenGymDictContainer> data)
 {

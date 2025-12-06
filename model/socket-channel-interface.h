@@ -69,6 +69,8 @@ class SocketChannelInterface : public ChannelInterface
      */
     Ptr<OpenGymDictContainer> Deserialize(Ptr<Packet> packet);
 
+    void DoDispose() override;
+
   private:
     /**
      * @brief Register new connections on this channel.

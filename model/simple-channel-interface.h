@@ -74,6 +74,9 @@ class SimpleChannelInterface : public ChannelInterface
      */
     void SetCommunicationPartner(Ptr<SimpleChannelInterface> communicationPartner);
 
+  protected:
+    void DoDispose() override;
+
   private:
     /**
      * @brief Disconnect from the communication partner without disconnecting the other side.

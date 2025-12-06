@@ -1,6 +1,7 @@
 #include "agent-application.h"
 
 #include "base-test.h"
+#include "rl-application.h"
 
 namespace ns3
 {
@@ -14,6 +15,40 @@ AgentApplication::AgentApplication()
 
 AgentApplication::~AgentApplication()
 {
+}
+
+void
+AgentApplication::DoDispose()
+{
+    for (auto& [appId, interfaceMap] : m_observationInterfaces)
+    {
+        for (auto& [id, interfacePtr] : interfaceMap)
+        {
+            interfacePtr->Dispose();
+        }
+    }
+    for (auto& [appId, interfaceMap] : m_rewardInterfaces)
+    {
+        for (auto& [id, interfacePtr] : interfaceMap)
+        {
+            interfacePtr->Dispose();
+        }
+    }
+    for (auto& [appId, interfaceMap] : m_agentInterfaces)
+    {
+        for (auto& [id, interfacePtr] : interfaceMap)
+        {
+            interfacePtr->Dispose();
+        }
+    }
+    for (auto& [appId, interfaceMap] : m_actionInterfaces)
+    {
+        for (auto& [id, interfacePtr] : interfaceMap)
+        {
+            interfacePtr->Dispose();
+        }
+    }
+    RlApplication::DoDispose();
 }
 
 TypeId

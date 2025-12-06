@@ -79,6 +79,7 @@ class RlAppBaseTestCase : public TestCase
   protected:
     void ScenarioSetup();
     void DoRun() override;
+    void DoTeardown() override;
     virtual void Simulate() = 0;
 
     std::vector<float> m_receivedData;

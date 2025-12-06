@@ -42,6 +42,10 @@ ActionAppTestCase::DoRun()
 
     sendingChannelInterface1->Connect(receivingChannelInterface1);
     sendingChannelInterface2->Connect(receivingChannelInterface2);
+
+    Simulator::ScheduleDestroy(&SimpleChannelInterface::Disconnect, sendingChannelInterface1);
+    Simulator::ScheduleDestroy(&SimpleChannelInterface::Disconnect, sendingChannelInterface2);
+
     actionApp->AddAgentInterface(43, receivingChannelInterface1);
     actionApp->AddAgentInterface(7, receivingChannelInterface2);
 

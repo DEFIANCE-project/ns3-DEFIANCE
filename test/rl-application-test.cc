@@ -92,6 +92,11 @@ RlAppSendTestCase::Simulate()
                         MakeDictBoxContainer<float>(1, "floatData", 42.0),
                         m_sendingInterfaces);
 
+    for (auto& interface : m_sendingInterfaces)
+    {
+        Simulator::ScheduleDestroy(&ChannelInterface::Disconnect, interface);
+    }
+
     Simulator::Run();
     Simulator::Destroy();
 
@@ -150,6 +155,11 @@ RlAppStopTestCase::Simulate()
                         MakeDictBoxContainer<float>(1, "floatData", 43.0),
                         interface2);
 
+    for (auto& interface : m_sendingInterfaces)
+    {
+        Simulator::ScheduleDestroy(&ChannelInterface::Disconnect, interface);
+    }
+
     Simulator::Run();
     Simulator::Destroy();
 
@@ -166,6 +176,9 @@ class RlAppTestSuite : public TestSuite
 {
   public:
     RlAppTestSuite();
+
+  protected:
+    void DoTeardown() override;
 };
 
 RlAppTestSuite::RlAppTestSuite()
@@ -173,6 +186,12 @@ RlAppTestSuite::RlAppTestSuite()
 {
     AddTestCase(new RlAppSendTestCase, Duration::QUICK);
     AddTestCase(new RlAppStopTestCase, Duration::QUICK);
+}
+
+void
+RlAppTestSuite::DoTeardown()
+{
+    Simulator::Destroy();
 }
 
 static RlAppTestSuite sRlAppTestSuite; //!< Static variable for test initialization

@@ -226,8 +226,10 @@ main(int argc, char* argv[])
     NS_LOG_INFO("Interface ID: " << interfaceId0);
 
     agent0->AddAgentInterface(1, channelInterface0_1);
+    agent0->SetId(RlApplicationId{AGENT, 0});
     agent0->Setup();
     agent1->AddAgentInterface(0, channelInterface1_0);
+    agent1->SetId(RlApplicationId{AGENT, 1});
     agent1->Setup();
 
     // add applications to nodes

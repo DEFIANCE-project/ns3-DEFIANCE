@@ -17,6 +17,7 @@ class AgentAppTestCase : public TestCase
 
   protected:
     void DoRun() override;
+    void DoTeardown() override;
     void ReceiveAction(int id, Ptr<OpenGymDictContainer> data);
     void ReceiveMessage(Ptr<OpenGymDictContainer> data);
 
@@ -33,6 +34,12 @@ AgentAppTestCase::AgentAppTestCase()
 
 AgentAppTestCase::~AgentAppTestCase()
 {
+}
+
+void
+AgentAppTestCase::DoTeardown()
+{
+    Simulator::Destroy();
 }
 
 void
@@ -55,6 +62,7 @@ AgentAppTestCase::DoRun()
     auto agentAppNode = CreateObject<Node>();
     auto agentApp = CreateObject<TestAgentApp>();
     agentAppNode->AddApplication(agentApp);
+    agentApp->SetId(RlApplicationId{AGENT, 1});
     agentApp->Setup();
 
     // Create ObservationInterfaces
@@ -245,7 +253,6 @@ AgentAppTestCase::DoRun()
     });
 
     Simulator::Run();
-    Simulator::Destroy();
 }
 
 /**

@@ -256,6 +256,15 @@ SocketChannelInterfaceTestCase::DoRun()
     Simulator::Schedule(Seconds(12.2), [&] { ExpectNotReceived(5, 5); });
     Simulator::Schedule(Seconds(12.2), [&] { ExpectReceived(6, 6); });
 
+    Simulator::ScheduleDestroy(&SimpleChannelInterface::Dispose, interfaceSimple0);
+    Simulator::ScheduleDestroy(&SimpleChannelInterface::Dispose, interfaceSimple1);
+    Simulator::ScheduleDestroy(&SocketChannelInterface::Dispose, interfaceUdp0_1A);
+    Simulator::ScheduleDestroy(&SocketChannelInterface::Dispose, interfaceTcp0_1A);
+    Simulator::ScheduleDestroy(&SocketChannelInterface::Dispose, interfaceUdp1_0);
+    Simulator::ScheduleDestroy(&SocketChannelInterface::Dispose, interfaceTcp1_0);
+    Simulator::ScheduleDestroy(&SocketChannelInterface::Dispose, interfaceUdp0_1B);
+    Simulator::ScheduleDestroy(&SocketChannelInterface::Dispose, interfaceTcp0_1B);
+
     // Run the simulation
     Simulator::Stop(Seconds(15));
     Simulator::Run();
@@ -271,12 +280,21 @@ class SocketChannelInterfaceTestSuite : public TestSuite
 {
   public:
     SocketChannelInterfaceTestSuite();
+
+  protected:
+    void DoTeardown() override;
 };
 
 SocketChannelInterfaceTestSuite::SocketChannelInterfaceTestSuite()
     : TestSuite("defiance-socket-channel-interface", Type::UNIT)
 {
     AddTestCase(new SocketChannelInterfaceTestCase, Duration::QUICK);
+}
+
+void
+SocketChannelInterfaceTestSuite::DoTeardown()
+{
+    Simulator::Destroy();
 }
 
 static SocketChannelInterfaceTestSuite

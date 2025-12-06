@@ -27,6 +27,12 @@ RlAppBaseTestCase::~RlAppBaseTestCase()
 }
 
 void
+RlAppBaseTestCase::DoTeardown()
+{
+    Simulator::Destroy();
+}
+
+void
 RlAppBaseTestCase::ReceiveData(int id, Ptr<OpenGymDictContainer> data)
 {
     auto boxContainer = data->Get("floatData")->GetObject<OpenGymBoxContainer<float>>();

@@ -228,6 +228,15 @@ main(int argc, char* argv[])
     Simulator::Schedule(Seconds(7), &ChannelInterface::Connect, interfaceUdp1_0, interfaceSimple0);
     Simulator::Schedule(Seconds(7), &ChannelInterface::Connect, interfaceSimple0, interfaceUdp1_0);
 
+    Simulator::ScheduleDestroy(&SimpleChannelInterface::Dispose, interfaceSimple0);
+    Simulator::ScheduleDestroy(&SimpleChannelInterface::Dispose, interfaceSimple1);
+    Simulator::ScheduleDestroy(&SocketChannelInterface::Dispose, interfaceUdp0_1A);
+    Simulator::ScheduleDestroy(&SocketChannelInterface::Dispose, interfaceTcp0_1A);
+    Simulator::ScheduleDestroy(&SocketChannelInterface::Dispose, interfaceUdp1_0);
+    Simulator::ScheduleDestroy(&SocketChannelInterface::Dispose, interfaceTcp1_0);
+    Simulator::ScheduleDestroy(&SocketChannelInterface::Dispose, interfaceUdp0_1B);
+    Simulator::ScheduleDestroy(&SocketChannelInterface::Dispose, interfaceTcp0_1B);
+
     // Run the simulation
     Simulator::Stop(Seconds(10));
     Simulator::Run();

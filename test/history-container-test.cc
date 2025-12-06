@@ -227,12 +227,21 @@ class HistoryContainerTestSuite : public TestSuite
 {
   public:
     HistoryContainerTestSuite();
+
+  protected:
+    void DoTeardown() override;
 };
 
 HistoryContainerTestSuite::HistoryContainerTestSuite()
     : TestSuite("defiance-history-container", Type::UNIT)
 {
     AddTestCase(new HistoryContainerTest, Duration::QUICK);
+}
+
+void
+HistoryContainerTestSuite::DoTeardown()
+{
+    Simulator::Destroy();
 }
 
 static HistoryContainerTestSuite

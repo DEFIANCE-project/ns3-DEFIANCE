@@ -263,6 +263,9 @@ class DataCollectorAppTestSuite : public TestSuite
 {
   public:
     DataCollectorAppTestSuite();
+
+  protected:
+    void DoTeardown() override;
 };
 
 DataCollectorAppTestSuite::DataCollectorAppTestSuite()
@@ -272,6 +275,12 @@ DataCollectorAppTestSuite::DataCollectorAppTestSuite()
     AddTestCase(new DataCollectorAppAllInterfacesTestCase, Duration::QUICK);
     AddTestCase(new DataCollectorAppOneAppTestCase, Duration::QUICK);
     AddTestCase(new DataCollectorAppDynamicTestCase, Duration::QUICK);
+}
+
+void
+DataCollectorAppTestSuite::DoTeardown()
+{
+    Simulator::Destroy();
 }
 
 static DataCollectorAppTestSuite

@@ -24,6 +24,7 @@ class SimpleChannelInterfaceBaseTestCase : public TestCase
   protected:
     void DoSetup() override;
     void DoRun() override;
+    void DoTeardown() override;
     virtual void Simulate() = 0;
 
     NodeContainer m_nodes;
@@ -56,11 +57,17 @@ class SimpleChannelInterfaceBaseTestCase : public TestCase
 SimpleChannelInterfaceBaseTestCase::SimpleChannelInterfaceBaseTestCase(std::string name)
     : TestCase(name)
 {
-    Ipv4AddressGenerator::TestMode();
 }
 
 SimpleChannelInterfaceBaseTestCase::~SimpleChannelInterfaceBaseTestCase()
 {
+}
+
+void
+SimpleChannelInterfaceBaseTestCase::DoTeardown()
+{
+    Ipv4AddressGenerator::Reset();
+    Simulator::Destroy();
 }
 
 void
@@ -69,6 +76,7 @@ SimpleChannelInterfaceBaseTestCase::DoSetup()
     m_nodes = NodeContainer{2};
     m_devices = GetDevices(m_nodes);
     m_interfaces = GetInterfaces(m_devices);
+    Ipv4AddressGenerator::TestMode();
 }
 
 void
@@ -254,6 +262,9 @@ SimpleChannelInterfaceConnectTestCase::Simulate()
                           DISCONNECTED,
                           "Connecting a simple interface with a socket interface (C -> Socket) - "
                           "Connection Status C = Disconnected");
+    simpleChannelInterfaceA->Disconnect();
+    simpleChannelInterfaceB->Disconnect();
+    simpleChannelInterfaceC->Disconnect();
 }
 
 /**
@@ -340,6 +351,9 @@ SimpleChannelInterfaceReceiveTestCase::Simulate()
                           "Sending from not connected interface returns -1");
 
     // TODO: Compare that the received message is correct
+
+    Simulator::ScheduleDestroy(&SimpleChannelInterface::Disconnect, simpleChannelInterfaceA);
+    Simulator::ScheduleDestroy(&SimpleChannelInterface::Disconnect, simpleChannelInterfaceB);
 
     Simulator::Stop(Seconds(10));
     Simulator::Run();

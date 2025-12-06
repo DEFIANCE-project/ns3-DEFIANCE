@@ -320,6 +320,9 @@ class CommunicationTestSuite : public TestSuite
 {
   public:
     CommunicationTestSuite();
+
+  protected:
+    void DoTeardown() override;
 };
 
 CommunicationTestSuite::CommunicationTestSuite()
@@ -327,6 +330,12 @@ CommunicationTestSuite::CommunicationTestSuite()
 {
     AddTestCase(new CommunicationTestCase, Duration::QUICK);
     AddTestCase(new DynamicInterfacesTestCase, Duration::QUICK);
+}
+
+void
+CommunicationTestSuite::DoTeardown()
+{
+    Simulator::Destroy();
 }
 
 static CommunicationTestSuite sCommunicationTestSuite; //!< Static variable for test initialization

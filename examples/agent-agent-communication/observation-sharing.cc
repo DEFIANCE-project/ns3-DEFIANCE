@@ -173,7 +173,7 @@ main(int argc, char* argv[])
                        StringValue("ns3::ConstantRandomVariable[Constant=1.0]"));
     Config::SetDefault("ns3::RandomWalk2dMobilityModel::Bounds", StringValue("0|200|0|200"));
 
-    uint32_t seed = 0;
+    uint32_t seed = 1;
     uint32_t runId = 0;
     uint32_t parallel = 0;
     std::string trialName = "";

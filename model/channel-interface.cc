@@ -53,3 +53,26 @@ ChannelInterface::SetConnectionStatus(ConnectionStatus status)
 {
     m_connectionStatus = status;
 }
+
+/**
+ * @ingroup defiance
+ * Unnamed namespace
+ */
+namespace
+{
+
+/**
+ * Helper class to automatically shutdown protobuf library on program end.
+ */
+class ProtobufShutdown
+{
+  public:
+    ~ProtobufShutdown()
+    {
+        google::protobuf::ShutdownProtobufLibrary();
+    };
+};
+
+ProtobufShutdown sProtobufShutdown; //!< Static variable for protobuf shutdown
+
+} // namespace

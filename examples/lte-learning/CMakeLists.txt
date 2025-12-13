@@ -20,20 +20,20 @@ include_directories(${pybind11_INCLUDE_DIRS})
 build_lib_example(
         NAME defiance-lte-learning
         SOURCE_FILES
-                lte-learning/pc-simulation.cc
-                lte-learning/pc-environment.cc
-                lte-learning/topology-creator.cc
-                lte-learning/sumo-environment.cc
-                lte-learning/static-environment.cc
-                lte-learning/device-manager.cc
-                lte-learning/base-environment.cc
+                pc-simulation.cc
+                pc-environment.cc
+                topology-creator.cc
+                sumo-environment.cc
+                static-environment.cc
+                device-manager.cc
+                base-environment.cc
         HEADER_FILES
-                lte-learning/pc-environment.h
-                lte-learning/topology-creator.h
-                lte-learning/sumo-environment.h
-                lte-learning/static-environment.h
-                lte-learning/device-manager.h
-                lte-learning/base-environment.h
+                pc-environment.h
+                topology-creator.h
+                sumo-environment.h
+                static-environment.h
+                device-manager.h
+                base-environment.h
         LIBRARIES_TO_LINK
                 ${libdefiance}
                 ${liblte}

@@ -165,3 +165,4 @@ build_lib_example(
                 ${libmobility}
                 ${libnetanim}
 )
+add_subdirectory(lte-learning)

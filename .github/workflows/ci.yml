@@ -130,6 +130,8 @@ jobs:
         run: |
           export NS3_HOME=$GITHUB_WORKSPACE/$NS3_HOME
           ./test.py -s "defiance*"
+          ./test.py -s "marl*"
+          ./test.py -e "defiance*"
 
       - name: Upload test results
         if: always()

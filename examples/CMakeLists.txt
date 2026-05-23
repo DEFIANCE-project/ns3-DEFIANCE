@@ -38,13 +38,6 @@ build_lib_example(
 )
 
 build_lib_example(
-        NAME defiance-ai-demo
-        SOURCE_FILES ai-demo/apb.cc
-        LIBRARIES_TO_LINK
-                ${libdefiance}
-)
-
-build_lib_example(
         NAME defiance-app-communication-example
         SOURCE_FILES
                 app-communication-example/simulation.cc

@@ -7,9 +7,10 @@
 #
 # See test.py for more information.
 cpp_examples = [
-    ("defiance-send-to-agent", "True", "True"),
-    ("defiance-channel-interface", "True", "True"),
-    ("defiance-observation-sharing", "True", "True"),
+    ("defiance-app-communication-example", "True", "True"),
+    ("defiance-agent-communication-example", "True", "True"),
+    ("defiance-channel-interface-example", "True", "True"),
+    ("defiance-observation-sharing-example", "True", "True"),
 ]
 
 # A list of Python examples to run in order to ensure that they remain

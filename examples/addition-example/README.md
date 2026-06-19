@@ -1,11 +1,11 @@
 # DEFIANCE addition example
 
-This example showcases the full defiance framework with in a silly environment: add a constant number to a random observation.
+This example showcases the full DEFIANCE framework within a silly environment: add a constant number to a random observation.
 
 ## Running this scenario
 
 You can use the `run-agent` tool to interact with this environment.
-ns3 exports this environment as the `defiance-addition-example` target.
+*ns-3* exports this environment as the `defiance-addition-example` target.
 For a training session, you can start `run-agent train -n defiance-addition-example`.
 `agent.py` showcases custom environment interaction using the `MultiAgentEnv`-API.
 

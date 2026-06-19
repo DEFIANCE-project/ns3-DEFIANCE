@@ -16,9 +16,9 @@ Ptr<OpenGymDictContainer>
 CreateTestMessage(float value)
 {
     Ptr<OpenGymDictContainer> msg = CreateObject<OpenGymDictContainer>();
-    Ptr<OpenGymBoxContainer<float>> box = CreateObject<OpenGymBoxContainer<float>>();
+    Ptr<OpenGymBoxContainer<int>> box = CreateObject<OpenGymBoxContainer<int>>();
     box->AddValue(value);
-    msg->Add("box", box);
+    msg->Add("msg", box);
     return msg;
 }
 
@@ -26,6 +26,7 @@ int
 main(int argc, char* argv[])
 {
     LogComponentEnable("ChannelInterfaceExample", LOG_LEVEL_INFO);
+
     // Create nodes
     NodeContainer nodes;
     nodes.Create(2);
@@ -50,9 +51,11 @@ main(int argc, char* argv[])
     auto udpProtocol = UdpSocketFactory::GetTypeId();
     auto tcpProtocol = TcpSocketFactory::GetTypeId();
 
+    // Create simple channel interfaces
     auto interfaceSimple0 = CreateObject<SimpleChannelInterface>();
     auto interfaceSimple1 = CreateObject<SimpleChannelInterface>();
 
+    // Create socket channel interfaces
     Ptr<SocketChannelInterface> interfaceUdp0_1A =
         CreateObject<SocketChannelInterface>(nodes.Get(0), interfaces.GetAddress(0), udpProtocol);
     Ptr<SocketChannelInterface> interfaceUdp0_1B =
@@ -67,9 +70,9 @@ main(int argc, char* argv[])
     Ptr<SocketChannelInterface> interfaceTcp1_0 =
         CreateObject<SocketChannelInterface>(nodes.Get(1), interfaces.GetAddress(1), tcpProtocol);
 
-    // add the receive callback to the channel interfaces
+    // Add the receive callback to the channel interfaces
     auto recvCallback = Callback<void, Ptr<OpenGymDictContainer>>(
-        [](Ptr<OpenGymDictContainer> msg) { NS_LOG_INFO(msg->Get("box")); });
+        [](Ptr<OpenGymDictContainer> msg) { NS_LOG_INFO(msg->Get("msg")); });
 
     interfaceSimple0->AddRecvCallback(recvCallback);
     interfaceSimple1->AddRecvCallback(recvCallback);
@@ -80,6 +83,7 @@ main(int argc, char* argv[])
     interfaceTcp0_1B->AddRecvCallback(recvCallback);
     interfaceTcp1_0->AddRecvCallback(recvCallback);
 
+    // Connect channel interfaces
     Simulator::Schedule(Seconds(0.1),
                         &SimpleChannelInterface::Connect,
                         interfaceSimple0,
@@ -95,7 +99,7 @@ main(int argc, char* argv[])
                         interfaceTcp0_1A,
                         interfaceTcp1_0);
 
-    // These interfaces are already connected: Therfore no new connection will be established.
+    // These interfaces are already connected: Therefore no new connection will be established.
     // Still, such a call should not lead to a crash or unexpected behaviour.
     Simulator::Schedule(Seconds(0.1),
                         &SocketChannelInterface::Connect,
@@ -106,6 +110,7 @@ main(int argc, char* argv[])
     interfaceSimple0->SetPropagationDelay(Seconds(0));
     interfaceSimple1->SetPropagationDelay(Seconds(0));
 
+    // Send messages in the direction 0 -> 1
     Simulator::Schedule(Seconds(0.5),
                         &SimpleChannelInterface::Send,
                         interfaceSimple0,
@@ -119,8 +124,7 @@ main(int argc, char* argv[])
                         interfaceTcp0_1A,
                         CreateTestMessage(2));
 
-    // sending in the other direction
-
+    // Sending in the other direction (1 -> 0)
     Simulator::Schedule(Seconds(0.8),
                         &SimpleChannelInterface::Send,
                         interfaceSimple1,
@@ -144,66 +148,59 @@ main(int argc, char* argv[])
                         interfaceTcp0_1B,
                         interfaceTcp1_0);
 
-    Simulator::Schedule(Seconds(2.5),
-                        &SimpleChannelInterface::Send,
-                        interfaceSimple0,
-                        CreateTestMessage(6));
-    // should not be received because the connection is not established
+    // The following two messages should not be received because the connection is not established
     Simulator::Schedule(Seconds(2.6),
                         &SocketChannelInterface::Send,
                         interfaceUdp0_1B,
-                        CreateTestMessage(7));
-    // should not be received because the connection is not established
+                        CreateTestMessage(6));
     Simulator::Schedule(Seconds(2.7),
                         &SocketChannelInterface::Send,
                         interfaceTcp0_1B,
-                        CreateTestMessage(8));
+                        CreateTestMessage(7));
 
-    Simulator::Schedule(Seconds(2.8),
-                        &SimpleChannelInterface::Send,
-                        interfaceSimple1,
-                        CreateTestMessage(9));
+    // But these messages should be received as these interfaces remain connected
     Simulator::Schedule(Seconds(2.9),
                         &SocketChannelInterface::Send,
                         interfaceUdp1_0,
-                        CreateTestMessage(10));
+                        CreateTestMessage(8));
     Simulator::Schedule(Seconds(3.0),
                         &SocketChannelInterface::Send,
                         interfaceTcp1_0,
-                        CreateTestMessage(11));
+                        CreateTestMessage(9));
 
+    // Similarly, we can also still send into the other direction
     Simulator::Schedule(Seconds(3.5),
                         &SocketChannelInterface::Send,
                         interfaceUdp0_1A,
-                        CreateTestMessage(12));
+                        CreateTestMessage(10));
     Simulator::Schedule(Seconds(3.6),
                         &SocketChannelInterface::Send,
                         interfaceTcp0_1A,
-                        CreateTestMessage(13));
+                        CreateTestMessage(11));
 
-    // but if we closed the old connection before and try again to connect this will work
+    // But if we closed the old connection before and try again to connect this will work
     Simulator::Schedule(Seconds(4), &SocketChannelInterface::Disconnect, interfaceUdp1_0);
     Simulator::Schedule(Seconds(4), &SocketChannelInterface::Disconnect, interfaceTcp1_0);
 
-    // this should not be received
+    // This should not be received
     Simulator::Schedule(Seconds(4.1),
                         &SocketChannelInterface::Send,
                         interfaceUdp1_0,
-                        CreateTestMessage(14));
+                        CreateTestMessage(12));
     Simulator::Schedule(Seconds(4.1),
                         &SocketChannelInterface::Send,
                         interfaceTcp1_0,
-                        CreateTestMessage(15));
-    Simulator::Schedule(Seconds(4.8),
+                        CreateTestMessage(13));
+    Simulator::Schedule(Seconds(4.2),
                         &SocketChannelInterface::Send,
                         interfaceUdp0_1A,
-                        CreateTestMessage(16));
-    Simulator::Schedule(Seconds(4.8),
+                        CreateTestMessage(14));
+    Simulator::Schedule(Seconds(4.3),
                         &SocketChannelInterface::Send,
                         interfaceTcp0_1A,
-                        CreateTestMessage(17));
+                        CreateTestMessage(15));
 
-    // now we do the new connect
+    // Now, we do the new connect
     Simulator::Schedule(Seconds(4.5),
                         &SocketChannelInterface::Connect,
                         interfaceUdp0_1B,
@@ -213,21 +210,33 @@ main(int argc, char* argv[])
                         interfaceTcp0_1B,
                         interfaceTcp1_0);
 
-    // should now be received
+    // Now, the following two messages should be received
     Simulator::Schedule(Seconds(5),
                         &SocketChannelInterface::Send,
                         interfaceUdp0_1B,
-                        CreateTestMessage(18));
-    // should now be received
+                        CreateTestMessage(16));
     Simulator::Schedule(Seconds(5),
                         &SocketChannelInterface::Send,
                         interfaceTcp0_1B,
-                        CreateTestMessage(19));
+                        CreateTestMessage(17));
+
+    // Connecting a simple and a socket channel interface should not work
     Simulator::Schedule(Seconds(6), &ChannelInterface::Disconnect, interfaceUdp1_0);
     Simulator::Schedule(Seconds(6), &ChannelInterface::Disconnect, interfaceSimple0);
     Simulator::Schedule(Seconds(7), &ChannelInterface::Connect, interfaceUdp1_0, interfaceSimple0);
     Simulator::Schedule(Seconds(7), &ChannelInterface::Connect, interfaceSimple0, interfaceUdp1_0);
 
+    // Hence, these messages will not be received
+    Simulator::Schedule(Seconds(7.1),
+                        &SocketChannelInterface::Send,
+                        interfaceUdp1_0,
+                        CreateTestMessage(18));
+    Simulator::Schedule(Seconds(7.2),
+                        &SimpleChannelInterface::Send,
+                        interfaceSimple0,
+                        CreateTestMessage(19));
+
+    // Delete channel interfaces
     Simulator::ScheduleDestroy(&SimpleChannelInterface::Dispose, interfaceSimple0);
     Simulator::ScheduleDestroy(&SimpleChannelInterface::Dispose, interfaceSimple1);
     Simulator::ScheduleDestroy(&SocketChannelInterface::Dispose, interfaceUdp0_1A);

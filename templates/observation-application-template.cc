@@ -19,9 +19,14 @@ class TemplateObservationApplication : public ObservationApplication
 
     void Observe(Ptr<OpenGymDictContainer> observation)
     {
-        // This is a custom function. You can rename it and change the signature aaccording to your
-        // callback in RegisterCallbacks() that references this function. NS_LOG_INFO("Received
-        // observation"); Send(observation, 0);
+        // This is a custom function. You can rename it and change the signature according to your
+        // callback in RegisterCallbacks() that references this function.
+
+        if (IsRunning())
+        { // Usually, observations shall only be processed if the application is running
+          // NS_LOG_INFO("Received observation");
+          // Send(observation, 0);
+        }
     }
 
     void RegisterCallbacks() override

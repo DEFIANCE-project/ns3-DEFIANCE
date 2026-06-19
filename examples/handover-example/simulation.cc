@@ -1,4 +1,4 @@
-#include "handover-scenario-setup.cc"
+#include "simulation-setup.cc"
 
 #include "ns3/applications-module.h"
 #include "ns3/communication-helper.h"
@@ -16,7 +16,7 @@
 
 using namespace ns3;
 
-NS_LOG_COMPONENT_DEFINE("HandoverScenario");
+NS_LOG_COMPONENT_DEFINE("HandoverExample");
 
 std::string handoverAlgorithm = "agent";
 uint16_t numberOfUes = 3;

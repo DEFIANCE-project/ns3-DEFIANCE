@@ -17,6 +17,7 @@ NodeListRewardApp::GetTypeId()
 {
     static TypeId tid = TypeId("ns3::NodeListRewardApp")
                             .SetParent<RewardApplication>()
+                            .SetGroupName("defiance")
                             .AddConstructor<NodeListRewardApp>();
     return tid;
 }

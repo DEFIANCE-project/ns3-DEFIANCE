@@ -1,5 +1,7 @@
 #include "rl-application.h"
 
+#include <string>
+
 namespace ns3
 {
 NS_LOG_COMPONENT_DEFINE("RlApplication");
@@ -42,36 +44,49 @@ RlApplication::~RlApplication()
 void
 RlApplication::StartApplication()
 {
+    NS_LOG_FUNCTION(this << m_running);
     m_running = true;
 }
 
 void
 RlApplication::StopApplication()
 {
+    NS_LOG_FUNCTION(this << m_running);
     m_running = false;
+}
+
+bool
+RlApplication::IsRunning()
+{
+    NS_LOG_FUNCTION(this);
+    return m_running;
 }
 
 void
 RlApplication::SetId(RlApplicationId id)
 {
+    NS_LOG_FUNCTION(this << id.ToString());
     m_id = id;
 }
 
 RlApplicationId
 RlApplication::GetId()
 {
+    NS_LOG_FUNCTION(this);
     return m_id;
 }
 
 void
 RlApplication::SetDefaultAddress(Ipv4Address address)
 {
+    NS_LOG_FUNCTION(this);
     m_defaultAddress = address;
 }
 
 Ipv4Address
 RlApplication::GetDefaultAddress()
 {
+    NS_LOG_FUNCTION(this);
     if (m_defaultAddress == GetNode()->GetObject<Ipv4>()->GetAddress(0, 0).GetAddress())
     { // if only loopback was available at setup check for better options
       // without overriding non-loopback-address
@@ -86,6 +101,7 @@ RlApplication::GetDefaultAddress()
 void
 RlApplication::Setup()
 {
+    NS_LOG_FUNCTION(this);
     if (!GetNode()->GetObject<Ipv4>())
     {
         return;
@@ -128,6 +144,7 @@ RlApplication::AddAgentInterface(uint32_t remoteAppId, Ptr<ChannelInterface> int
 uint
 RlApplication::AddInterface(RlApplicationId applicationId, Ptr<ChannelInterface> interface)
 {
+    NS_LOG_FUNCTION(this << applicationId.ToString() << interface);
     auto appId = applicationId.applicationId;
     switch (applicationId.applicationType)
     {
@@ -171,6 +188,7 @@ RlApplication::DeleteAgentInterface(uint32_t remoteAppId, uint interfaceId)
 void
 RlApplication::DeleteInterface(RlApplicationId applicationId, uint interfaceId)
 {
+    NS_LOG_FUNCTION(this << applicationId.ToString() << interfaceId);
     auto appId = applicationId.applicationId;
     switch (applicationId.applicationType)
     {
@@ -205,7 +223,7 @@ void
 RlApplication::Send(Ptr<OpenGymDictContainer> data,
                     const std::map<uint, Ptr<ChannelInterface>>& interfaces)
 {
-    NS_LOG_FUNCTION(this << data);
+    NS_LOG_FUNCTION(this << data << m_running);
     if (m_running)
     {
         for (const auto& [_, interface] : interfaces)

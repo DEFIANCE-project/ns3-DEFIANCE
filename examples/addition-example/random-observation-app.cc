@@ -18,6 +18,7 @@ RandomObservationApp::GetTypeId()
 {
     static TypeId tid = TypeId("ns3::RandomObservationApp")
                             .SetParent<ObservationApplication>()
+                            .SetGroupName("defiance")
                             .AddConstructor<RandomObservationApp>();
     return tid;
 }

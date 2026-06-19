@@ -19,6 +19,7 @@ AdditionAgentApp::GetTypeId()
 {
     static TypeId tid = TypeId("ns3::AdditionAgentApp")
                             .SetParent<AgentApplication>()
+                            .SetGroupName("defiance")
                             .AddConstructor<AdditionAgentApp>();
     return tid;
 }

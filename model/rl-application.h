@@ -139,6 +139,11 @@ class RlApplication : public Application
      */
     void StopApplication() override;
 
+    /**
+     * @brief Return whether application is currently in running mode.
+     */
+    bool IsRunning();
+
     bool m_running; //!< If true, messages to other RlApplications can be sent, if false, Send
                     //!< methods throw all messages away
 
